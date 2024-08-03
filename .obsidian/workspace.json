@@ -13,9 +13,9 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "obnote/FFmpeg环境依赖库.md",
+                "file": "obnote/FFmpeg环境依赖库的安装.md",
                 "mode": "source",
-                "source": false
+                "source": true
               }
             }
           }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "obnote/FFmpeg环境依赖库.md",
+                "file": "obnote/FFmpeg环境依赖库的安装.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "obnote/FFmpeg环境依赖库.md",
+                "file": "obnote/FFmpeg环境依赖库的安装.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "obnote/FFmpeg环境依赖库.md"
+                "file": "obnote/FFmpeg环境依赖库的安装.md"
               }
             }
           }
