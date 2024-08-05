@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "obnote/FFmpeg环境依赖库的安装.md",
+                "file": "ffmpeg/图像格式_基于QT和SDL渲染.md",
                 "mode": "source",
                 "source": true
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "obnote/FFmpeg环境依赖库的安装.md",
+                "file": "ffmpeg/图像格式_基于QT和SDL渲染.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "obnote/FFmpeg环境依赖库的安装.md",
+                "file": "ffmpeg/图像格式_基于QT和SDL渲染.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "obnote/FFmpeg环境依赖库的安装.md"
+                "file": "ffmpeg/图像格式_基于QT和SDL渲染.md"
               }
             }
           }
@@ -147,5 +147,7 @@
     }
   },
   "active": "7123a74352ae6ee9",
-  "lastOpenFiles": []
+  "lastOpenFiles": [
+    "后端"
+  ]
 }
