@@ -69,7 +69,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 298.5
   },
   "right": {
     "id": "edfc211876e0663f",
@@ -148,8 +148,11 @@
   },
   "active": "7123a74352ae6ee9",
   "lastOpenFiles": [
+    "Pasted image 20240805152154.png",
+    "ffmpeg/图像格式_基于QT和SDL渲染/image_note/Pasted image 20240805152130.png",
     "ffmpeg/图像格式_基于QT和SDL渲染/image_note/Pasted image 20240805151414.png",
     "ffmpeg/图像格式_基于QT和SDL渲染/图像格式_基于QT和SDL渲染.md",
+    "Pasted image 20240805151756.png",
     "ffmpeg/图像格式_基于QT和SDL渲染/image_note",
     "ffmpeg/图像格式_基于QT和SDL渲染",
     "后端"

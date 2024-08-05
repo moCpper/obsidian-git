@@ -9,7 +9,7 @@ void TestRGB::paintEvent(QPaintEvent* ev){
         int b = j * w * 3;                          //获取每行首像素的偏移
         r--;
         for (int i = 0; i < w * 3; i += 3) {
-            d[b + i] = 255;
+            d[b + i] = r;
             d[b + i + 1] = 0;
             d[b + i + 2] = 0;
         }   
@@ -23,4 +23,11 @@ void TestRGB::paintEvent(QPaintEvent* ev){
 
 ```
 
-QImage和QPainter为QT绘图类，
+---
+QImage和QPainter为QT绘图类。
+>QImage提供图像的像素级的操作,其中QImage::bits()return图片首个像素的地址
+>QPainter则负责在绘图设备上进行绘图操作，用以将QImage修改的图片在窗口上进行绘制。
+>overridec'k
+---
+绘制结果如图：
+![[Pasted image 20240805152130.png]]
