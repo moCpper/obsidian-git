@@ -14,7 +14,7 @@
               "type": "markdown",
               "state": {
                 "file": "ffmpeg/图像格式_基于QT和SDL渲染/图像格式_基于QT和SDL渲染.md",
-                "mode": "preview",
+                "mode": "source",
                 "source": false
               }
             }
@@ -69,7 +69,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 298.5
+    "width": 319.5
   },
   "right": {
     "id": "edfc211876e0663f",

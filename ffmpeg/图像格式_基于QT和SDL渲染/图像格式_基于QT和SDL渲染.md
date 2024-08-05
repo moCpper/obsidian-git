@@ -1,4 +1,4 @@
-## RGB颜色
+## RGB
 
 - RGB的定义
   -   RGB888 是一种颜色表示方法，使用 24 位（8 位红色、8 位绿色和 8 位蓝色）来表示颜色。其他RGB变体如RGB565则依此类推，使用 16 位表示颜色（5 位红色，6 位绿色，5 位蓝色）
@@ -11,7 +11,7 @@
 | 透明度 | 不支持           | 支持                 |
 | 用途  | 通常用于不需要透明度的图像 | 适用于需要透明度的图像（如图层叠加） |
 
-```
+```cpp
 void TestRGB::paintEvent(QPaintEvent* ev){
     QImage im(w, h, QImage::Format_RGB888);         //RGB888表示每24bit组成一个像素
     auto d = im.bits();                             //QImage::bits() 返回第一个像素地址
@@ -37,7 +37,7 @@ void TestRGB::paintEvent(QPaintEvent* ev){
 ---
 QImage和QPainter为QT绘图类。
 
--QImage提供图像的像素级的操作,其中QImage::bits()return图片首个像素的地址。
+-QImage提供图像的像素级的操作,其中QImage::bits()return图片首个'像素'的地址。
 -QPainter则负责在绘图设备上进行绘图操作，用以将QImage修改的图片在窗口上进行绘制。
 >
 *override窗口的paintEvent以达到在自定义控件或窗口上进行绘图操作,其在调用show()时会被自动调用。*
