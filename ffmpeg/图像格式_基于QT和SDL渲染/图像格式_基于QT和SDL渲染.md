@@ -48,4 +48,118 @@ QImage和QPainter为QT绘图类。
 
 
 ##SDL
+基于SDL的图像渲染
+```cpp
+#include <iostream>
+extern "C"{
+#include<SDL.h>
+}
+#pragma comment(lib,"SDL2.lib")
+#undef main
+int SDL_main(int argc,char* argv[]){
+    int w = 800;
+    int h = 600;
+    //1初始化SDL video库
+    if (SDL_Init(SDL_INIT_VIDEO)) {
+        std::cout << SDL_GetError();
+        return -1;
+    }
 
+    //2生成SDL窗口
+    auto screen = SDL_CreateWindow("test sdl ffmpeg", 
+        SDL_WINDOWPOS_CENTERED,                 //窗口位置
+        SDL_WINDOWPOS_CENTERED,
+        w,h,
+        SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE);
+    if (!screen) {
+        std::cout << SDL_GetError() << std::endl;
+        return -1;
+    }
+
+    //3生成渲染器
+    auto render = SDL_CreateRenderer(screen, -1,SDL_RENDERER_ACCELERATED);
+    if (!render) {
+        std::cout << SDL_GetError() << std::endl;;
+        return -1;
+    }
+
+    //4生成材质
+    auto texture = SDL_CreateTexture(render, SDL_PIXELFORMAT_ARGB8888,
+        SDL_TEXTUREACCESS_STREAMING, w, h);                                         //可加锁
+    if (!texture) {
+        std::cout << SDL_GetError() << std::endl;
+        return -1;
+    }
+    unsigned char _r = 255;
+    //存放图像的数据
+    unsigned char* r = new unsigned char[w * h * 4];
+    for (;;) {
+        _r--;
+        SDL_Event ev;
+        SDL_WaitEventTimeout(&ev,10);
+        if (ev.type == SDL_QUIT) {
+            SDL_DestroyWindow(screen);
+            break;
+        }
+
+        for (int j = 0; j < h; j++) {
+            int b = j * w * 4;
+            for (int i = 0; i < w * 4; i += 4) {
+                r[b + i] = 0;                   //B
+                r[b + i + 1] = 0;               //G
+                r[b + i + 2] = _r;             //R
+                r[b + i + 3] = 0;               //A
+            }
+        }
+
+        //5内存数据写入材质
+        SDL_UpdateTexture(texture, NULL, r, w * 4);
+
+        //6清理屏幕
+        SDL_RenderClear(render);
+        SDL_Rect sdl_rect;
+        sdl_rect.x = 0;
+        sdl_rect.y = 0;
+        sdl_rect.w = w;
+        sdl_rect.h = h;
+
+        //7复制材质到渲染器
+        SDL_RenderCopy(render, texture,
+            NULL,                               //原图位置和尺寸
+            &sdl_rect);                         //目标位置和尺寸
+
+        //8渲染
+        SDL_RenderPresent(render);
+    }
+    delete[] r;
+    ::getchar();
+    return 0;  
+}
+```
+
+
+**SDL_CreateWindow()**
+-  用于创建一个SDL窗口，提供给你绘制图形和处理用户输入的区域。
+```cpp
+auto screen = SDL_CreateWindow("test sdl ffmpeg", 
+        SDL_WINDOWPOS_CENTERED,                 //窗口位置
+        SDL_WINDOWPOS_CENTERED,
+        w,h,
+        SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE);
+```
+其传入的参数分别为 ： 
+   -  窗口标题
+   -  窗口水平位置
+   -  窗口垂直位置
+      -  **`SDL_WINDOWPOS_CENTERED`**: 将窗口的位置设置为屏幕中心。这是一个常用的标志，表示窗口在屏幕上的水平和垂直位置都居中。
+   -  窗口宽度和高度
+   - 以及窗口标志
+      - **`SDL_WINDOW_OPENGL`**: 指示窗口将使用 OpenGL 上下文。这通常用于需要进行 OpenGL 渲染的应用程序。
+      - **`SDL_WINDOW_RESIZABLE`**: 允许用户调整窗口的大小。这使得窗口可以被拖动和改变尺寸，提供更大的灵活性。
+
+
+ **` SDL_CreateRenderer()`**
+- 其函数返回一个渲染器，这个渲染器可以用来在窗口上绘制图形，是渲染图像和图形的主要工具，在使用 SDL 进行图形绘制时是不可或缺的。
+- 
+ 
+ 
