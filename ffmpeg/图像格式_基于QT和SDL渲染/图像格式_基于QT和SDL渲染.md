@@ -349,3 +349,7 @@ YUV和RGB的主要区别
 - YUV 444，不共用，一个 Y 分量使用一套 UV 分量
     -   提供最高的色彩精度和数据量，适合高质量需求
 
+**相比于RGB的交叉存储,例如:RGB RGB RGB RGB，YUV为平面存储:如:yyyyyyyy uu vv**
+
+
+## 
