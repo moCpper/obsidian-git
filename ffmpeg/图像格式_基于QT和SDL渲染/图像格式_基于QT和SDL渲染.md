@@ -268,4 +268,10 @@ void TestRGB::timerEvent(QTimerEvent* ev) {
     SDL_RenderPresent(sdl_render);
 }
 ```
-##
+
+## 使用SDL渲染合并两幅图像
+
+```cpp
+
+
+```
