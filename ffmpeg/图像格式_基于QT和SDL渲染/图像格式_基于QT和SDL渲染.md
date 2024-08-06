@@ -47,8 +47,8 @@ QImage和QPainter为QT绘图类。
 ![[Pasted image 20240805152130.png]]
 
 
-##SDL
-基于SDL的图像渲染
+## SDL
+基于SDL的图像渲染，以下实现了一个红色的渐变渲染：
 ```cpp
 #include <iostream>
 extern "C"{
@@ -157,9 +157,60 @@ auto screen = SDL_CreateWindow("test sdl ffmpeg",
       - **`SDL_WINDOW_OPENGL`**: 指示窗口将使用 OpenGL 上下文。这通常用于需要进行 OpenGL 渲染的应用程序。
       - **`SDL_WINDOW_RESIZABLE`**: 允许用户调整窗口的大小。这使得窗口可以被拖动和改变尺寸，提供更大的灵活性。
 
-
- **` SDL_CreateRenderer()`**
+ **SDL_CreateRenderer()**
 - 其函数返回一个渲染器，这个渲染器可以用来在窗口上绘制图形，是渲染图像和图形的主要工具，在使用 SDL 进行图形绘制时是不可或缺的。
-- 
- 
- 
+- 参数分别为为关联的窗口，使用默认的渲染驱动，以及使用硬件加速
+```cpp
+  auto render = SDL_CreateRenderer(screen, -1,SDL_RENDERER_ACCELERATED);
+    if (!render) {
+        std::cout << SDL_GetError() << std::endl;;
+        return -1;
+    }
+```
+
+**SDL_CreateTexture**
+- 用于创建纹理（texture）的函数。纹理是一种图像资源，它用于在渲染过程中将图像绘制到窗口上。这个函数的作用和参数解释如下：
+- 要将纹理与之关联的渲染器。纹理会通过这个渲染器进行渲染
+- 纹理的像素格式。定义了纹理中每个像素的颜色信息的布局和深度。例如`SDL_PIXELFORMAT_ARGB8888`
+- 纹理的访问模式。
+  - `SDL_TEXTUREACCESS_STATIC`: 纹理内容在创建时设置且不再改变。
+  - `SDL_TEXTUREACCESS_STREAMING`: 纹理内容可以在运行时动态更新。
+  - `SDL_TEXTUREACCESS_TARGET`: 纹理可以被用作渲染目标（即，渲染到这个纹理上。
+- 宽高
+```cpp
+  auto texture = SDL_CreateTexture(render, SDL_PIXELFORMAT_ARGB8888,
+        SDL_TEXTUREACCESS_STREAMING, w, h);    
+```
+
+**SDL_UpdateTexture**
+- 是 SDL 库中用于更新纹理内容的函数。它的主要作用是在运行时将内存中的图像数据复制到指定的纹理中，以便后续的渲染操作使用。
+
+```cpp
+SDL_UpdateTexture(texture, NULL, r, w * 4);
+```
+
+**SDL_RenderClear**
+- 清空指定的渲染器 (`render`) 的当前内容。这一行会用渲染器的当前绘制颜色填充整个窗口，通常是黑色或其他设置的颜色。
+- 在每帧渲染开始时，首先清除上一次的绘制内容，以避免在屏幕上留下残影。
+```cpp
+SDL_RenderClear(render);
+```
+
+**SDL_RenderCopy**
+- 将 `texture` 纹理中的图像拷贝到渲染器中，并按照 `sdl_rect` 指定的位置和大小进行绘制。
+```cpp
+SDL_Rect sdl_rect;   //用于指定目标绘制区域的位置信息和尺寸。
+sdl_rect.x = 0;
+sdl_rect.y = 0;
+sdl_rect.w = w;
+sdl_rect.h = h;
+SDL_RenderCopy(render,texture,NULL,&sdl_rect);       
+```
+
+**SDL_RenderPresent**
+- 将当前渲染器的内容呈现到窗口上，显示所有通过 `SDL_RenderCopy` 绘制的内容。这一行实际上将之前在渲染器中进行的所有绘制操作（比如清空、绘制纹理等）更新到屏幕上，确保用户能够看到最新的渲染结果。
+```cpp
+SDL_RenderPresent(render);
+```
+
+##
