@@ -170,13 +170,13 @@ auto screen = SDL_CreateWindow("test sdl ffmpeg",
 
 **SDL_CreateTexture**
 - 用于创建纹理（texture）的函数。纹理是一种图像资源，它用于在渲染过程中将图像绘制到窗口上。这个函数的作用和参数解释如下：
-- 要将纹理与之关联的渲染器。纹理会通过这个渲染器进行渲染
-- 纹理的像素格式。定义了纹理中每个像素的颜色信息的布局和深度。例如`SDL_PIXELFORMAT_ARGB8888`
-- 纹理的访问模式。
-  - `SDL_TEXTUREACCESS_STATIC`: 纹理内容在创建时设置且不再改变。
-  - `SDL_TEXTUREACCESS_STREAMING`: 纹理内容可以在运行时动态更新。
-  - `SDL_TEXTUREACCESS_TARGET`: 纹理可以被用作渲染目标（即，渲染到这个纹理上。
-- 宽高
+    -   要将纹理与之关联的渲染器传入。纹理会通过这个渲染器进行渲染
+    -   纹理的像素格式。定义了纹理中每个像素的颜色信息的布局和深度。例如`SDL_PIXELFORMAT_ARGB8888`
+    -   纹理的访问模式。执行策略如下：
+	      - `SDL_TEXTUREACCESS_STATIC`: 纹理内容在创建时设置且不再改变。
+		  - `SDL_TEXTUREACCESS_STREAMING`: 纹理内容可以在运行时动态更新。
+		  - `SDL_TEXTUREACCESS_TARGET`: 纹理可以被用作渲染目标（即，渲染到这个纹理上。
+	- 宽高
 ```cpp
   auto texture = SDL_CreateTexture(render, SDL_PIXELFORMAT_ARGB8888,
         SDL_TEXTUREACCESS_STREAMING, w, h);    
@@ -213,4 +213,59 @@ SDL_RenderCopy(render,texture,NULL,&sdl_rect);
 SDL_RenderPresent(render);
 ```
 
+在QT中渲染控件,效果如上。
+```cpp
+static SDL_Window* sdl_win = nullptr;
+static SDL_Renderer* sdl_render = nullptr;
+static SDL_Texture* sdl_texture = nullptr;
+static int sdl_w = 0;
+static int sdl_h = 0;
+static unsigned char* rgb = nullptr;
+static int pix_size = 4;
+static unsigned char t = 255;
+
+TestRGB::TestRGB(QWidget *parent)
+    : QWidget(parent){
+
+    ui.setupUi(this);
+    int w = this->width();
+    int h = this->height();
+    ui.label->setFixedSize(QSize(w,h));
+    sdl_w = ui.label->width();
+    sdl_h = ui.label->height();
+
+    SDL_Init(SDL_INIT_VIDEO);
+
+    sdl_win = SDL_CreateWindowFrom((void*)ui.label->winId());
+
+    sdl_render = SDL_CreateRenderer(sdl_win, -1, SDL_RENDERER_ACCELERATED);
+
+    sdl_texture = SDL_CreateTexture(sdl_render,SDL_PIXELFORMAT_ARGB8888,SDL_TEXTUREACCESS_STREAMING,sdl_w,sdl_h);
+
+    rgb = new unsigned char[sdl_w*sdl_h*4];
+    startTimer(10);
+}
+
+void TestRGB::timerEvent(QTimerEvent* ev) {
+    t--;
+    for (int j = 0; j < sdl_h; j++) {
+        int b = j * sdl_w * pix_size;
+        for (int i = 0; i < sdl_w*pix_size; i += pix_size) {
+            rgb[b + i] = 0;
+            rgb[b + i + 1] = t;
+            rgb[b + i + 2] = 0;
+            rgb[b + i + 3] = 0;
+        }
+    }
+    SDL_UpdateTexture(sdl_texture,NULL,rgb,sdl_w*pix_size);
+    SDL_RenderClear(sdl_render);
+    SDL_Rect rect{};
+    rect.x = 0;
+    rect.y = 0;
+    rect.w = sdl_w;
+    rect.h = sdl_h;
+    SDL_RenderCopy(sdl_render, sdl_texture,NULL,&rect);
+    SDL_RenderPresent(sdl_render);
+}
+```
 ##
