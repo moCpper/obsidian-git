@@ -351,5 +351,9 @@ YUV和RGB的主要区别
 
 **相比于RGB的交叉存储,例如:RGB RGB RGB RGB，YUV为平面存储:如:yyyyyyyy uu vv**
 
-
+使用ffmpeg.exe 将mp4转为yuv
+![[Pasted image 20240806203245.png]]
+ **Stream #0:0(eng): Video: rawvideo (I420 / 0x30323449), yuv420p(progressive), 400x300 [SAR 4:3 DAR 16:9], q=2-31, 36000 kb/s, 25 fps, 25 tbn (default)**
+ 可见，将mp4转换为了yuv420p,25帧。
+ 
 ## 
