@@ -272,6 +272,80 @@ void TestRGB::timerEvent(QTimerEvent* ev) {
 ## 使用SDL渲染合并两幅图像
 
 ```cpp
+TestRGB::TestRGB(QWidget *parent)
+    : QWidget(parent){
 
+    ui.setupUi(this);
 
+    SDL_Init(SDL_INIT_VIDEO);
+
+    sdl_win = SDL_CreateWindowFrom((void*)ui.label->winId());
+
+    sdl_render = SDL_CreateRenderer(sdl_win, -1, SDL_RENDERER_ACCELERATED);
+
+    QImage img1("1.png");
+    QImage img2("2.png");
+    if (img1.isNull() || img2.isNull()) {
+        QMessageBox::information(this,"open image error","open image filed！");
+        return;
+    }
+    int out_w = img1.width() + img2.width();
+    int out_h = img1.height() > img2.height() ? img1.height() : img2.height();
+
+    sdl_w = out_w;
+    sdl_h = out_h;
+    resize(sdl_w, sdl_h);
+    ui.label->move(0, 0);
+    ui.label->resize(sdl_w, sdl_h);
+
+    sdl_texture = SDL_CreateTexture(sdl_render,SDL_PIXELFORMAT_ARGB8888,SDL_TEXTUREACCESS_STREAMING,sdl_w,sdl_h);
+
+    rgb = new unsigned char[sdl_w*sdl_h*4];
+
+    //默认设置为透明
+    ::memset(rgb, 0, sdl_w * sdl_h * pix_size);
+
+    //合并两幅图像
+    for (int i = 0; i < sdl_h; i++) {
+        int b = i * sdl_w * pix_size;
+        if (i < img2.height()) {
+            ::memcpy(rgb+b,img2.scanLine(i),img2.width()*pix_size);
+        }
+        b += img2.width() * pix_size;
+        if (i < img1.height()) {
+            ::memcpy(rgb+b, img1.scanLine(i), img1.width() * pix_size);
+        } 
+    }
+
+    QImage out(rgb,sdl_w,sdl_h,QImage::Format_ARGB32);
+    out.save("out.png");
+
+    startTimer(10);
+}
 ```
+
+渲染后如图:
+![[Pasted image 20240806143617.png]]
+
+## YUV格式
+
+ YUV 中Y是指亮度分量，U指蓝色色度分量，而V指红色色度分量。
+ 
+YUV和RGB的主要区别
+
+|             | YUV                              | RGB                         |
+| ----------- | -------------------------------- | --------------------------- |
+| **色彩表示方式**: | 将颜色信息分为亮度和色度，适用于视频压缩和传输。         | 直接表示颜色分量（红、绿、蓝），适用于图像处理和显示。 |
+| **数据量和压缩**  | 通过降低色度分量的采样率来减少数据量，提高压缩效率        | 每个像素需要三个分量（R、G、B），通常数据量较大。  |
+| **视觉效果**    | 更适合视频处理和传输，能够在降低数据量的同时保持较高的视觉质量。 | 更适合需要高色彩精度的场景，如图像编辑和计算机显示   |
+| **用途**      | 常用于视频压缩、广播电视和视频编码。               | 通常用于计算机图像处理、显示器显示。          |
+
+由于人眼对 Y 的敏感度远超于对 U 和 V 的敏感，所以有时候可以多个 Y 分量共用一组 UV，这样既可以极大得节省空间，又可以不太损失质量。
+所以YUV被分为了三种格式，分别为: **YUV 420**，**YUV 422**，**YUV 444**,其中4表示4个像素点为一组
+- YUV 420，由 4 个 Y 分量共用一套 UV 分量，
+	-  在色彩精度和数据量之间取得平衡，适合视频采集和传输。
+- YUV 422，由 2 个 Y 分量共用一套 UV 分量
+	-  在色彩精度和数据量之间取得平衡，适合视频采集和传输。
+- YUV 444，不共用，一个 Y 分量使用一套 UV 分量
+    -   提供最高的色彩精度和数据量，适合高质量需求
+
