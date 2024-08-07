@@ -356,4 +356,78 @@ YUV和RGB的主要区别
  **Stream #0:0(eng): Video: rawvideo (I420 / 0x30323449), yuv420p(progressive), 400x300 [SAR 4:3 DAR 16:9], q=2-31, 36000 kb/s, 25 fps, 25 tbn (default)**
  可见，将mp4转换为了yuv420p,25帧。
  
+示例: 使用SDL_QT播放渲染YUV
+```cpp
+static SDL_Window* sdl_win = nullptr;
+static SDL_Renderer* sdl_render = nullptr;
+static SDL_Texture* sdl_texture = nullptr;
+static int sdl_w = 0;
+static int sdl_h = 0;
+static unsigned char* yuv = nullptr;
+static int pix_size = 2;
+static std::ifstream yuv_file;
+
+TestRGB::TestRGB(QWidget *parent)
+    : QWidget(parent){
+
+    //打开yuv
+    yuv_file.open("400_300_25.yuv",std::ios::binary);
+    if (!yuv_file) {
+        QMessageBox::information(this,"open error","open yun error");
+        return;
+    }
+
+    ui.setupUi(this);
+
+    SDL_Init(SDL_INIT_VIDEO);
+
+    sdl_win = SDL_CreateWindowFrom((void*)ui.label->winId());
+
+    sdl_render = SDL_CreateRenderer(sdl_win, -1, SDL_RENDERER_ACCELERATED);
+
+    int out_w = 400;
+    int out_h = 300;
+
+    sdl_w = out_w;
+    sdl_h = out_h;
+
+    sdl_texture = SDL_CreateTexture(sdl_render,
+        SDL_PIXELFORMAT_IYUV,                       
+        SDL_TEXTUREACCESS_STREAMING,
+        sdl_w,sdl_h);
+
+    yuv = new unsigned char[sdl_w*sdl_h*pix_size];
+
+    startTimer(10);
+}
+
+void TestRGB::timerEvent(QTimerEvent* ev) {
+
+    yuv_file.read((char*)yuv, sdl_w*sdl_h*1.5);
+
+    SDL_UpdateTexture(sdl_texture,NULL,yuv,sdl_w);
+    SDL_RenderClear(sdl_render);
+    SDL_Rect rect{};
+    rect.x = 0;
+    rect.y = 0;
+    rect.w = sdl_w;
+    rect.h = sdl_h;
+    SDL_RenderCopy(sdl_render, sdl_texture,NULL,&rect);
+    SDL_RenderPresent(sdl_render);
+}
+```
+
+注意:
+因为YUV 4:2:0 中 每4个Y分量对应2个UV分量，故而U 和 V 分量的内存大小为 `(sdl_w / 2) * (sdl_h / 2)` 字节
+推到出总字节数为sdl_w * sdl_h + (sdl_w / 2) * (sdl_h / 2)  + (sdl_w / 2) * (sdl_h / 2)
+得到`sdl_w * sdl_h * 1.5`。
+```cpp
+yuv_file.read((char*)yuv, sdl_w*sdl_h*1.5);
+```
+
+在 IYUV 格式中，每个 Y 像素对应 1 字节，而 UV 分量的数量和排列方式是按行的，但它们通常会在后续处理阶段进行解码或转换，所以这里传递 Y 分量的宽度足够了。
+```cpp
+SDL_UpdateTexture(sdl_texture,NULL,yuv,sdl_w);
+```
+
 ## 
