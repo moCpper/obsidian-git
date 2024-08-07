@@ -353,7 +353,7 @@ YUV和RGB的主要区别
 
 使用ffmpeg.exe 将mp4转为yuv
 ![[Pasted image 20240806203245.png]]
- **Stream #0:0(eng): Video: rawvideo (I420 / 0x30323449), yuv420p(progressive), 400x300 [SAR 4:3 DAR 16:9], q=2-31, 36000 kb/s, 25 fps, 25 tbn (default)**
+ 根据提供的日志 **Stream #0:0(eng): Video: rawvideo (I420 / 0x30323449), yuv420p(progressive), 400x300 [SAR 4:3 DAR 16:9], q=2-31, 36000 kb/s, 25 fps, 25 tbn (default)**
  可见，将mp4转换为了yuv420p,25帧。
  
 示例: 使用SDL_QT播放渲染YUV
