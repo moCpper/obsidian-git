@@ -198,6 +198,8 @@ SDL_RenderClear(render);
 
 **SDL_RenderCopy**
 - 将 `texture` 纹理中的图像拷贝到渲染器中，并按照 `sdl_rect` 指定的位置和大小进行绘制。
+- 第三个参数指定源texture的范围以拷贝到render。
+- 第四个参数指定目标绘制区域的信息和尺寸。
 ```cpp
 SDL_Rect sdl_rect;   //用于指定目标绘制区域的位置信息和尺寸。
 sdl_rect.x = 0;
@@ -429,5 +431,3 @@ yuv_file.read((char*)yuv, sdl_w*sdl_h*1.5);
 ```cpp
 SDL_UpdateTexture(sdl_texture,NULL,yuv,sdl_w);
 ```
-
-## 
