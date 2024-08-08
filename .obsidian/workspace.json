@@ -14,7 +14,7 @@
               "type": "markdown",
               "state": {
                 "file": "ffmpeg/FFmpeg_AVFrame视频渲染.md",
-                "mode": "source",
+                "mode": "preview",
                 "source": false
               }
             }
@@ -150,6 +150,7 @@
   "lastOpenFiles": [
     "ffmpeg/图像格式_基于QT和SDL渲染.md",
     "ffmpeg/FFmpeg_AVFrame视频渲染.md",
+    "ffmpeg/image_note/Pasted image 20240808122058.png",
     "ffmpeg/image_note/Pasted image 20240806203245.png",
     "ffmpeg/image_note/Pasted image 20240806143617.png",
     "ffmpeg/image_note/Pasted image 20240805152130.png",

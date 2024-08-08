@@ -352,6 +352,8 @@ YUV和RGB的主要区别
     -   提供最高的色彩精度和数据量，适合高质量需求
 
 **相比于RGB的交叉存储,例如:RGB RGB RGB RGB，YUV为平面存储:如:yyyyyyyy uu vv**
+例如：
+![[Pasted image 20240808122058.png]]
 
 使用ffmpeg.exe 将mp4转为yuv
 ![[Pasted image 20240806203245.png]]
