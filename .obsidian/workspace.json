@@ -13,8 +13,8 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "ffmpeg/图像格式_基于QT和SDL渲染.md",
-                "mode": "preview",
+                "file": "ffmpeg/FFmpeg_AVFrame视频渲染.md",
+                "mode": "source",
                 "source": false
               }
             }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "ffmpeg/图像格式_基于QT和SDL渲染.md",
+                "file": "ffmpeg/FFmpeg_AVFrame视频渲染.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "ffmpeg/图像格式_基于QT和SDL渲染.md",
+                "file": "ffmpeg/FFmpeg_AVFrame视频渲染.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "ffmpeg/图像格式_基于QT和SDL渲染.md"
+                "file": "ffmpeg/FFmpeg_AVFrame视频渲染.md"
               }
             }
           }
@@ -148,8 +148,8 @@
   },
   "active": "7123a74352ae6ee9",
   "lastOpenFiles": [
-    "ffmpeg/FFmpeg_AVFrame视频渲染.md",
     "ffmpeg/图像格式_基于QT和SDL渲染.md",
+    "ffmpeg/FFmpeg_AVFrame视频渲染.md",
     "ffmpeg/image_note/Pasted image 20240806203245.png",
     "ffmpeg/image_note/Pasted image 20240806143617.png",
     "ffmpeg/image_note/Pasted image 20240805152130.png",
