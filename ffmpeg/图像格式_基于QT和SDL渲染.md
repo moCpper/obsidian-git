@@ -1,4 +1,4 @@
-## RGB格式
+# RGB格式
 
 - RGB的定义
   -   RGB888 是一种颜色表示方法，使用 24 位（8 位红色、8 位绿色和 8 位蓝色）来表示颜色。其他RGB变体如RGB565则依此类推，使用 16 位表示颜色（5 位红色，6 位绿色，5 位蓝色）
@@ -47,7 +47,7 @@ QImage和QPainter为QT绘图类。
 ![[Pasted image 20240805152130.png]]
 
 
-## SDL
+# SDL
 基于SDL的图像渲染，以下实现了一个红色的渐变渲染：
 ```cpp
 #include <iostream>
@@ -271,7 +271,7 @@ void TestRGB::timerEvent(QTimerEvent* ev) {
 }
 ```
 
-## 使用SDL渲染合并两幅图像
+# 使用SDL渲染合并两幅图像
 
 ```cpp
 TestRGB::TestRGB(QWidget *parent)
@@ -329,7 +329,7 @@ TestRGB::TestRGB(QWidget *parent)
 渲染后如图:
 ![[Pasted image 20240806143617.png]]
 
-## YUV格式
+# YUV格式
 
  YUV 中Y是指亮度分量，U指蓝色色度分量，而V指红色色度分量。
  

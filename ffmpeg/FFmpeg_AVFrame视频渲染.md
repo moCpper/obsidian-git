@@ -1,4 +1,4 @@
-## AVFrame
+# AVFrame
 
 AVFrame的源码实现：
 
@@ -17,7 +17,9 @@ typedef struct AVFrame {
 	...... 
 } AVFrame;
 ```
-其中linesize成员表示数组中的每个元素代表对应图像平面的每一行的字节数。
+其中`linesize`成员表示数组中的每个元素代表对应图像平面的每一行的字节数。
+`data` 成员是一个指向多个数据缓冲区的指针数组，它用于存储多种格式的数据。具体来说，每个 `data[i]` 指针表示不同的数据通道，通常用在视频和音频处理中。
+这个设计不仅方便存储和操作多通道数据，还确保了对不同类型媒体内容的灵活支持。
 
 -  AVFrame 对象必须调用 **` av_frame_alloc() `**在堆上分配，注意此处指的是 AVFrame 对象本身，AVFrame 对象必须调用 **` av_frame_free() `**进行销毁。
 -  AVFrame 通常只需分配一次，然后可以多次重用，每次重用前应调用 **` av_frame_unref() `** 将 frame 复位到原始的干净可用的状态。
@@ -43,4 +45,65 @@ typedef struct AVFrame {
 **  av_frame_clone() **
 创建一个新的 frame，新的 frame 和 src 使用同一数据缓冲区，缓冲区管理使用引用计数机制。  
 本函数相当于 av_frame_alloc()+av_frame_ref()
+
+
+# 帧率控制
+- 帧率表示每秒展示的图像数量
+- 当帧率大于15帧的时候，人眼的主观感受差别不大。
+- 视神经会保留物体的印象大概为1/24秒
+- 如何控制帧率：
+	 - 根据视频帧时间控制
+	 - 根据间隔时间控制(sleep时间不准的问题)
+
+不管是标准中的`std::thread_this::sleep_for`，还是win的sleep或是linux的sleep，因为涉及到的是OS,都存在延迟,比如sleep(10ms)，你预期的是10ms渲染一帧，但实际考虑的os因素过多，可能比预期的要慢个几ms。
+所以我包装了一层std::this_thread::sleep_for，clock reutrn**自进程开始 CRT 初始化后的运行时间**
+即进程的大概运行时间。
+根据(clock() - beg) / (CLOCKS_PER_SEC / 1000) >= ms 判断当前函数执行时长是否超过预期的ms。
+```cpp
+void MSleep(unsigned int ms){
+	auto beg = clock();
+	for (int i = 0; i < ms; i++) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		if ((clock() - beg) / (CLOCKS_PER_SEC / 1000) >= ms) {
+			break;
+		}
+	}
+}
+```
+
+
+实例: 根据`QSpinBox`控件提供的value进行帧率控制
+```cpp
+void TestRGB::View() {
+    yuv_file.read((char*)frame->data[0], sdl_w * sdl_h);
+    yuv_file.read((char*)frame->data[1], sdl_w * sdl_h / 4);
+    yuv_file.read((char*)frame->data[2], sdl_w * sdl_h / 4);
+    if(yuv_file.tellg() == file_size){              //读到.yuv的末尾
+        yuv_file.seekg(0,std::ios::beg);
+    }
+
+    if (view->IsExit()) {
+        view->Close();
+        ::exit(0);
+    }
+    //view->Draw(yuv,XVideoView::Format::YUV420P);
+    view->DrawFrame(frame);
+  
+    std::stringstream ss;
+    ss << "fps:" << view->render_fps();
+    view_fps_label->setText(ss.str().c_str());
+    fps = set_fps->value();
+}
+
+void TestRGB::thraed_func(){
+    while (!is_exit_) {
+        emit ViewS();
+        if (fps > 0) {
+            MSleep(1000 / fps);                    //1000ms/fps得到渲染一帧所需要的ms
+        }else { 
+            MSleep(10);
+        }
+    }
+}
+```
 
