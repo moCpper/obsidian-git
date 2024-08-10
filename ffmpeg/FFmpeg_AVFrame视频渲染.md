@@ -55,10 +55,10 @@ typedef struct AVFrame {
 	 - 根据视频帧时间控制
 	 - 根据间隔时间控制(sleep时间不准的问题)
 
-不管是标准中的`std::thread_this::sleep_for`，还是win的sleep或是linux的sleep，因为涉及到的是OS,都存在延迟,比如sleep(10ms)，你预期的是10ms渲染一帧，但实际考虑的os因素过多，可能比预期的要慢个几ms。
-所以我包装了一层std::this_thread::sleep_for，clock reutrn**自进程开始 CRT 初始化后的运行时间**
-即进程的大概运行时间。
-根据(clock() - beg) / (CLOCKS_PER_SEC / 1000) >= ms 判断当前函数执行时长是否超过预期的ms。
+> 不管是标准中的`std::thread_this::sleep_for`，还是win的sleep或是linux的sleep，因为涉及到的是OS,都存在延迟,比如sleep(10ms)，你预期的是10ms渲染一帧，但实际考虑的os因素过多，可能比预期的要慢个几ms。
+> 所以我包装了一层std::this_thread::sleep_for，clock reutrn**自进程开始 CRT 初始化后的运行时间**
+> 即进程的大概运行时间。
+> 根据(clock() - beg) / (CLOCKS_PER_SEC / 1000) >= ms 判断当前函数执行时长是否超过预期的ms。
 ```cpp
 void MSleep(unsigned int ms){
 	auto beg = clock();
@@ -106,4 +106,3 @@ void TestRGB::thraed_func(){
     }
 }
 ```
-
