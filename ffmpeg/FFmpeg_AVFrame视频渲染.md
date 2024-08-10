@@ -72,7 +72,7 @@ void MSleep(unsigned int ms){
 ```
 
 
-实例: 根据`QSpinBox`控件提供的value进行帧率控制
+示例: 根据`QSpinBox`控件提供的value进行帧率控制
 ```cpp
 void TestRGB::View() {
     yuv_file.read((char*)frame->data[0], sdl_w * sdl_h);
