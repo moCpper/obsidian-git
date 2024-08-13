@@ -38,7 +38,8 @@ SwsContext *sws_getCachedContext(struct SwsContext *context,
 ## sws_scale() 
 FFmpeg中的 sws_scale() 函数主要是用来做视频像素格式和分辨率的转换，其优势在于：可以在同一个函数里实现：1.图像色彩空间转换， 2:分辨率缩放，3:前后图像滤波处理。
 
-以下是一个将`YUV420P`转为`RGBA`的一个demo：
+
+**以下是一个将`YUV420P`转为`RGBA`的一个demo：**
 ```cpp
 auto main() -> int {
 	std::ifstream yuv_file;
