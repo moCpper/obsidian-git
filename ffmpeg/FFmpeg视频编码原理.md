@@ -382,4 +382,40 @@ av_opt_set_int(c->priv_data, "qp", 18, 0);
 ![[Pasted image 20240814145952.png]]
 
 ### **恒定比特率(CBR)**
+CBR的兼容性和稳定性较高，但是存在资源浪费：
+**比如在简单的场景中，CBR会使用过多的比特，导致存储空间和带宽的浪费。
+而在复杂的场景中，CBR会导致视频质量波动，因为编码器必须在保持恒定码率的同时压缩视频，可能会牺牲一些细节。**
+```cpp
+/***************************
+*  恒定比特率(CBR)由于MP4不支持NAL填充，因此输出文件必须为（MPEG-2 TS）
+*/
+int br = 400000;  //400kb
+c->rc_min_rate = br;
+c->rc_max_rate = br;
+c->rc_buffer_size = br;
+c->bit_rate = br;
+av_opt_set(c->priv_data, "nal-hrd", "cbr", 0);
+```
+![[Pasted image 20240814172335.png]]
+根据日志可得**每帧的大小比较固定**
+![[Pasted image 20240814172443.png]]
+平均码率为400kb左右，比特率非常的稳定，
+### **恒定速率因子(CRF)和约束编码(VBV)**
+
+```cpp
+/***************************
+*  恒定速率因子(CRF)
+*/
+av_opt_set_int(c->priv_data, "crf", 23, 0);
+
+/***************************
+*  约束编码(VBV) Constrained Encoding (VBV)
+*/
+av_opt_set_int(c->priv_data, "crf", 23, 0);
+c->rc_max_rate = br;
+c->rc_buffer_size = br * 2;
+```
+
+
+
 
