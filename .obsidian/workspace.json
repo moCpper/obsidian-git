@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "ffmpeg/FFmpeg视频编码原理.md",
+                "file": "ffmpeg/FFmpeg像素格式转换和多路YUV_RGB渲染.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "ffmpeg/FFmpeg视频编码原理.md",
+                "file": "ffmpeg/FFmpeg像素格式转换和多路YUV_RGB渲染.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "ffmpeg/FFmpeg视频编码原理.md",
+                "file": "ffmpeg/FFmpeg像素格式转换和多路YUV_RGB渲染.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "ffmpeg/FFmpeg视频编码原理.md"
+                "file": "ffmpeg/FFmpeg像素格式转换和多路YUV_RGB渲染.md"
               }
             }
           }
@@ -148,12 +148,12 @@
   },
   "active": "7123a74352ae6ee9",
   "lastOpenFiles": [
+    "ffmpeg/FFmpeg_AVFrame视频渲染.md",
+    "ffmpeg/FFmpeg视频编码原理.md",
     "ffmpeg/image_note/Pasted image 20240813201957.png",
     "ffmpeg/image_note/Pasted image 20240813201157.png",
     "ffmpeg/FFmpeg像素格式转换和多路YUV_RGB渲染.md",
     "ffmpeg/图像格式_基于QT和SDL渲染.md",
-    "ffmpeg/FFmpeg视频编码原理.md",
-    "ffmpeg/FFmpeg_AVFrame视频渲染.md",
     "ffmpeg/image_note/Pasted image 20240808122058.png",
     "ffmpeg/image_note/Pasted image 20240813152250.png",
     "Pasted image 20240813143828.png",
@@ -162,7 +162,6 @@
     "ffmpeg/image_note/Pasted image 20240805152130.png",
     "ffmpeg/图像格式_基于QT和SDL渲染/image_note/Pasted image 20240805151414.png",
     "Pasted image 20240805152154.png",
-    "Pasted image 20240805151756.png",
     "ffmpeg/image_note",
     "ffmpeg",
     "后端"
