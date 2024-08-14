@@ -318,3 +318,22 @@ B帧，或称为双向预测内插编码帧（Bidirectional Interpolated Predict
 >`preset` 的参数主要调节编码速度和质量的平衡，有 `ultrafast`（转码速度最快，视频质量可能较低）、`superfast`、`veryfast`、`faster`、`fast`、`medium`（默认设置）、`slow`、`slower`、`veryslow` 和 `placebo` 这 10 个选项，从快到慢排列.选择的 `preset` 会影响编码器使用的计算资源和最终输出视频的质量。例如，`ultrafast` 预设会使用较少的计算资源，但输出视频的质量可能不如 `veryslow` 预设，后者会使用更多的计算资源以提高视频质量.
 
 
+调用av_opt_set来预设编码器参数(**在打开编码上下文之前**)
+```cpp
+//预设编码器参数
+c->max_b_frames = 0;		//B帧设为0，降低延时，增大空间。
+int opt_re = av_opt_set(c->priv_data,"preset","ultrafast",0);	//最快速度
+if (opt_re != 0) {
+	std::cout << "preset failed !" << std::endl;
+}
+av_opt_set(c->priv_data, "tune", "zerolatency", 0); //0延时
+
+//4 打开编码上下文
+/*.......*/
+```
+使用**BitrateViewer**查看，生成之后的码率更高。
+这意味着编码器会使用更快的算法来减少编码时间，但这些算法可能不会进行足够的分析来找到最佳的压缩方式，从而导致生成的文件比使用其他预设选项时更大。
+![[Pasted image 20240814130344.png]]
+
+## 比特率控制
+
