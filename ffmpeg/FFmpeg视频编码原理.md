@@ -455,3 +455,44 @@ c->rc_buffer_size = br * 2;
 
 **IDR(Instantaneous Decoding Refresh)**
 IDR一定是I帧，但I帧不一定是IDR。一旦出现IDR，就表示清除前面的序列，并且立刻渲染当前的IDR帧。
+
+示例：解析出AVPacket中的NALU
+```cpp
+/*.......*/
+//图像组 一组包含一个IDR SPS PPS 其他是P帧和B帧
+c->gop_size = 6;
+/*.......*/
+/*分析NALU
+*一个AVPacket中包含多个NALU，以0001间隔，多个是以001间隔
+*  0001[NALU_HEAD]
+* [HALU_HEAD]
+* forbidden_bit(1bit), nal_reference_bit(2bit) (优先级)
+* nal_unit_type(5bits)
+* 0 ：未规定
+* 1 : 非IDR图像中不采用数据划分的片段
+* 5：IDR图像的片段
+* 6：补充增强信息(SEI0)
+* 7：序列参数集/SPS
+* 8：图像参数集/PPS
+*/
+int nal_unit_type = 0;
+unsigned char nal_head = *(pkt->data + 4);	//+4去掉开头的0001
+nal_unit_type = nal_head & 0x1f;			//取后五位 0001 1111
+std::cout << nal_unit_type << " " << std::flush;
+for (int i = 4; i < pkt->size - 4; i++) {	//一个data中有多条NALU
+	if (pkt->data[i] == 0 &&
+		pkt->data[i + 1] == 0 &&
+		pkt->data[i + 2] == 1) {		//001
+		nal_unit_type = pkt->data[i + 3] & 0x1f;
+		std::cout << "(" << nal_unit_type << ")" << std::flush;
+	}
+}
+```
+![[Pasted image 20240814223842.png]]
+根据日志可得，每六帧有一个关键帧，大小也随之变大(关键帧越多，压缩率越低)
+
+## XEncode封装
+- 轻封装 保留FFmpeg结构体
+- 线程安全处理
+- 获取编码缓冲数据
+
