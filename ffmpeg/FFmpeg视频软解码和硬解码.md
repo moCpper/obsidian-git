@@ -15,3 +15,6 @@
 	 - 如果要重复利用需要调用**`av_frame_make_writable(AVFrame* frame)`**
 - return
 	- 0表示返回成功，成功后缓冲中可能还有帧数据，可以再次屌用**`avcodec_receive_frame`**获取
+
+# H264帧分割
+
