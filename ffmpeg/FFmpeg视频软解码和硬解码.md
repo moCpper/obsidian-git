@@ -176,3 +176,45 @@ av_packet_free(&pkt);
 ```
 
 # 完成硬件GPU加速解码DXVA2
+
+## 解码硬件加速 DXVA2
+
+**`const char *av_hwdevice_get_type_name(enum AVHWDeviceType type);`**
+此函数通常用于确定一个硬件设备（如 **GPU**）的类型，以便了解它支持哪些**硬件加速**特性。
+
+```cpp
+/*
+* 打印所有支持的硬件加速方式
+*/
+for (int i = 0;; i++) {
+	auto config = avcodec_get_hw_config(codec, i);
+	if (!config) { break; }
+	if (config->device_type) {
+		std::cout << av_hwdevice_get_type_name(config->device_type) << std::endl;
+	}
+}
+```
+![[Pasted image 20240816182651.png]]
+由此可得此设备支持的**硬件加速**的方式
+
+开启硬件加速：
+```cpp
+//硬件加速格式
+auto hw_type = AV_HWDEVICE_TYPE_DXVA2;
+//初始化硬件加速上下文
+AVBufferRef* hw_ctx = nullptr;
+av_hwdevice_ctx_create(&hw_ctx,hw_type,NULL,NULL,0);
+
+c->hw_device_ctx = av_buffer_ref(hw_ctx);
+```
+![[Pasted image 20240816185235.png]]
+可见，**硬解码下CPU占用率几乎没有**。
+
+在开启1线程进行**软解码**时，fps以及CPU占用率
+![[Pasted image 20240816185534.png]]
+![[Pasted image 20240816185822.png]]
+
+在开启1线程进行**硬解码**时，fps以及CPU占用率:
+![[Pasted image 20240816185645.png]]
+![[Pasted image 20240816185904.png]]
+因为本机显卡为NVIDIA 4060laptop,
