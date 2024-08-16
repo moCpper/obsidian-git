@@ -65,3 +65,114 @@ av_packet_free(&pkt);
 ```
 ![[Pasted image 20240816142306.png]]
 根据输出日志可看到读取的每帧数据的大小。
+
+将**packet**发送的**解码线程**并获取：
+```cpp
+if (pkt->size) {					//若截取失败，为0
+	//std::cout << pkt->size << " " << std::flush;
+	//发送packet到解码线程
+	ret = avcodec_send_packet(c, pkt);
+	if (ret < 0) { break; }
+	//获取多帧解码数据
+	while (ret >= 0) {
+		//每次会调用av_frame_unref
+		ret = avcodec_receive_frame(c, frame);
+		if (ret < 0) { break; }
+		std::cout << frame->format << " " << std::flush;
+	}
+```
+与编码相同，可能存在**缓冲区未读完**的情况，需要另做处理：
+```cpp
+	//取出缓存数据
+	int ret = avcodec_send_packet(c, NULL);
+	while (ret >= 0) {
+		ret = avcodec_receive_frame(c, frame);
+		if (ret < 0) { break; }
+		std::cout << frame->format << "-" << std::flush;
+	}
+```
+下面是一个完整的demo：将解码出的数据利用**SDL2**进行渲染
+```cpp
+std::string filename = "D:\\cppsoft\\ffmpeg\\code\\src\\first_ffmpeg\\test.h264";
+std::ifstream ifs;
+ifs.open(filename, std::ios::binary);
+if (!ifs) { std::cerr << ".h264 open failed ! " << std::endl; return -1; }
+unsigned char inbuf[4096]{ 0 };
+AVCodecID codec_id = AV_CODEC_ID_H264;
+auto view = XVideoView::Create();
+//1 找到解码器
+auto codec = avcodec_find_decoder(codec_id);
+
+//2 创建上下文
+auto c = avcodec_alloc_context3(codec);
+
+//3 打开上下文
+avcodec_open2(c, NULL, NULL);
+
+//分割上下文
+auto parser = av_parser_init(codec_id);
+auto pkt = av_packet_alloc();
+auto frame = av_frame_alloc();
+int count = 0;										//计算帧率
+auto beg = NowMs();
+bool is_init_win = false;
+while (!ifs.eof()) {
+	ifs.read((char*)inbuf,sizeof(inbuf));
+	int data_size = ifs.gcount();			//读取的字节数
+	if (data_size <= 0) { break; }
+	auto data = inbuf;
+	while (data_size > 0) {				//一次有多帧数据
+		//通过0001 截断输出到AVPacket中 返回帧大小
+		int ret = av_parser_parse2(parser, c,
+			&pkt->data, &pkt->size,			//输出
+			data, data_size,				//输入
+			AV_NOPTS_VALUE, AV_NOPTS_VALUE, 0);
+		data += ret;
+		data_size -= ret;					//已处理
+		if (pkt->size) {					//若截取失败，为0
+			//std::cout << pkt->size << " " << std::flush;
+			//发送packet到解码线程
+			ret = avcodec_send_packet(c, pkt);
+			if (ret < 0) { break; }
+			//获取多帧解码数据
+			while (ret >= 0) {
+				//每次会调用av_frame_unref
+				ret = avcodec_receive_frame(c, frame);
+				if (ret < 0) { break; }
+				std::cout << frame->format << " " << std::flush;
+				/*
+				* 第一帧初始化窗口
+				*/
+				if (!is_init_win) {
+					is_init_win = true;
+					view->Init(frame->width, frame->height, (XVideoView::Format)frame->format);
+				}
+				view->DrawFrame(frame);
+
+				count++;
+				auto cur = NowMs();
+				if (cur - beg >= 100) {					// 1/10秒钟计算一次fps
+					std::cout << "\nfps:"<<count*10 << std::endl;
+					beg = cur;
+					count = 0;
+				}
+			}
+		}
+	}
+}
+
+//取出缓存数据
+int ret = avcodec_send_packet(c, NULL);
+while (ret >= 0) {
+	ret = avcodec_receive_frame(c, frame);
+	if (ret < 0) { break; }
+	std::cout << frame->format << "-" << std::flush;
+}
+
+av_parser_close(parser);
+avcodec_free_context(&c);
+av_frame_free(&frame);
+av_packet_free(&pkt);
+```
+
+# 完成硬件GPU加速解码DXVA2
