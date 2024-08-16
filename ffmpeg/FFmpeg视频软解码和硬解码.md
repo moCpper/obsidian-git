@@ -1,6 +1,19 @@
 常识：
 - **软解码**：**使用CPU进行解码**，不依赖于硬件加速。灵活性高，可以解码几乎所有FFmpeg支持的格式。
-- **硬解码**：**使用非CPU进行解码**，如显卡GPU、专用的DSP、FPGA、ASIC芯片等，减轻CPU负担。但**可能不支持某些特定的解码格式**。
+- **硬解码**：**使用非CPU进行解码**，如显卡GPU、专用的DSP、FPGA、ASIC芯片等，减轻CPU负担。但**可能不支持某些特定的解码格式**。硬解码可使用的格式如：
+	 1. **CUDA**：如果使用 NVIDIA 的 CUDA 技术进行硬解码，那么解码过程通常发生在 GPU 的显存中。
+    
+	1. **VAAPI**：VAAPI（Video Acceleration API）是一种在 Linux 系统上使用的硬件加速技术，它允许 GPU 处理视频解码任务，解码过程发生在 GPU 的显存中。
+    
+	1. **DXVA2**：DXVA2（DirectX Video Acceleration 2.0）是 Microsoft 提供的一种视频加速技术，用于 Windows 系统。它也允许 GPU 进行视频解码，同样，解码过程发生在 GPU 的显存中。
+    
+	1. **QSV**：Intel Quick Sync Video 是 Intel 提供的一种视频加速技术，用于 Intel 的集成 GPU。硬解码发生在 GPU 的显存中。
+    
+	1. **Vulkan Video**：Vulkan 是一种跨平台的图形和计算 API，它也支持视频解码加速，解码过程同样发生在 GPU 的显存中。
+    
+	1. **Metal**：对于 Apple 的硬件，Metal API 可以用于 GPU 加速的视频解码。
+    
+硬解码的优势在于它可以显著提高解码效率，减少 CPU 的负担，特别是在处理高分辨率或高比特率的视频流时。
 
 # avcodec_send_packet
 - 发送到解码线程
@@ -209,12 +222,14 @@ c->hw_device_ctx = av_buffer_ref(hw_ctx);
 ```
 ![[Pasted image 20240816185235.png]]
 可见，**硬解码下CPU占用率几乎没有**。
+>`硬解码下pix_fmt区别于YUV420P，是因为U和V存于同于个data[1]中，需要另作渲染。
+>`硬解码过程发生在GPU显存中`
 
-在开启1线程进行**软解码**时，fps以及CPU占用率
+- 在开启1线程进行**软解码**时，fps以及CPU占用率
 ![[Pasted image 20240816185534.png]]
-![[Pasted image 20240816185822.png]]
+![[Pasted image 20240816185800.png]]
 
-在开启1线程进行**硬解码**时，fps以及CPU占用率:
+- 在开启1线程进行**硬解码**时，fps以及CPU占用率:
 ![[Pasted image 20240816185645.png]]
 ![[Pasted image 20240816185904.png]]
-因为本机显卡为NVIDIA 4060laptop,
+**因为本机显卡为NVIDIA 4060laptop,在此设备下硬解码效率高于软解码**
