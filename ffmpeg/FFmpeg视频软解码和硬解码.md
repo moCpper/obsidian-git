@@ -232,4 +232,5 @@ c->hw_device_ctx = av_buffer_ref(hw_ctx);
 - 在开启1线程进行**硬解码**时，fps以及CPU占用率:
 ![[Pasted image 20240816185645.png]]
 ![[Pasted image 20240816185904.png]]
+
 **因为本机显卡为NVIDIA 4060laptop,在此设备下硬解码效率高于软解码**
