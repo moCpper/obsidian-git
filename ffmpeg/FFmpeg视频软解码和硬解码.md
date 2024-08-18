@@ -1,3 +1,4 @@
+****
 常识：
 - **软解码**：**使用CPU进行解码**，不依赖于硬件加速。灵活性高，可以解码几乎所有FFmpeg支持的格式。
 - **硬解码**：**使用非CPU进行解码**，如显卡GPU、专用的DSP、FPGA、ASIC芯片等，减轻CPU负担。但**可能不支持某些特定的解码格式**。硬解码可使用的格式如：
@@ -14,7 +15,7 @@
 	1. **Metal**：对于 Apple 的硬件，Metal API 可以用于 GPU 加速的视频解码。
     
 硬解码的优势在于它可以显著提高解码效率，减少 CPU 的负担，特别是在处理高分辨率或高比特率的视频流时。
-
+****
 # avcodec_send_packet
 - 发送到解码线程
 -  **avpkt**为NULL通过**`avcodec_receive_frame`**获取缓冲中的帧
@@ -30,6 +31,7 @@
 	- 0表示返回成功，成功后缓冲中可能还有帧数据，可以再次屌用**`avcodec_receive_frame`**获取
 
 # H264帧分割
+****
 **`av_parser_parse2`**
 **解析**视频和音频流,要作用是分析输入的多媒体数据包，提取出帧信息.
 `av_parser_parse2`尝试在输入数据中找到帧的边界。并将其分割到 `pkt->data` 中。`pkt->size` 表示解析出的帧的大小。
@@ -189,7 +191,7 @@ av_packet_free(&pkt);
 ```
 
 # 完成硬件GPU加速解码DXVA2
-
+****
 ## 解码硬件加速 DXVA2
 
 **`const char *av_hwdevice_get_type_name(enum AVHWDeviceType type);`**
@@ -231,6 +233,27 @@ c->hw_device_ctx = av_buffer_ref(hw_ctx);
 
 - 在开启1线程进行**硬解码**时，fps以及CPU占用率:
 ![[Pasted image 20240816185645.png]]
+`pix_fmt为53说明AV_PIX_FMT_DXVA2_VLD`
 ![[Pasted image 20240816185904.png]]
 
 **因为本机显卡为NVIDIA 4060laptop,在此设备下硬解码效率高于软解码**
+
+>`在开启**硬件加速**时，调试可发现**frame**中的**data[0]到data[2]**都为NULL，这是因为data[3]中存放的是显存的地址。因此在利用SDL进行渲染时，需要将其copy到内存中。`
+
+![[Pasted image 20240818085949.png]]
+
+```cpp
+				auto pframe = frame;		//为了同时支持硬解码和软解码
+				if (c->hw_device_ctx) {		//硬解码
+					//硬解码转换GPU =》CPU   显存=》内存
+					//AV_PIX_FMT_NV12     1 plane for Y and 1 plane for the UV components
+					av_hwframe_transfer_data(hw_frame,frame,0);
+					pframe = hw_frame;
+				}
+
+				//AV_PIX_FMT_DXVA2_VLD
+				std::cout << pframe->format << " " << std::flush;
+```
+`av_hwframe_transfer_data`用于将显存中的数据copy到内存中。
+根据调试可得,转换后的pix_fmt区别于YUV420P，**hw_frame**的**data[1]**同时存储了**U和V**。
+且hw_frame的format为**AV_PIX_FMT_NV12**，根据官方的注释`1 plane for Y and 1 plane for the UV components`可知他区别与传统的YUV420P。
