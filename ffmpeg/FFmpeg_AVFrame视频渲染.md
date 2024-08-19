@@ -1,5 +1,6 @@
 # AVFrame
 ****
+>`AVFrame一般用于存储原始帧（即非压缩帧，例如对视频来说是YUV，RGB，对音频来说是PCM）相反AVPacket存储的是经过压缩后的压缩帧`
 
 AVFrame的源码实现：
 

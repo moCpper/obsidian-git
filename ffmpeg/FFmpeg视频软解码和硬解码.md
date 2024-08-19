@@ -1,5 +1,4 @@
-****
-常识：
+**常识**：
 - **软解码**：**使用CPU进行解码**，不依赖于硬件加速。灵活性高，可以解码几乎所有FFmpeg支持的格式。
 - **硬解码**：**使用非CPU进行解码**，如显卡GPU、专用的DSP、FPGA、ASIC芯片等，减轻CPU负担。但**可能不支持某些特定的解码格式**。硬解码可使用的格式如：
 	 1. **CUDA**：如果使用 NVIDIA 的 CUDA 技术进行硬解码，那么解码过程通常发生在 GPU 的显存中。
@@ -257,3 +256,6 @@ c->hw_device_ctx = av_buffer_ref(hw_ctx);
 `av_hwframe_transfer_data`用于将显存中的数据copy到内存中。
 根据调试可得,转换后的pix_fmt区别于YUV420P，**hw_frame**的**data[1]**同时存储了**U和V**。
 且hw_frame的format为**AV_PIX_FMT_NV12**，根据官方的注释`1 plane for Y and 1 plane for the UV components`可知他区别与传统的YUV420P。
+
+# DXVA硬解码到GPU不复制内存直接渲染
+****
