@@ -130,3 +130,37 @@ typedef struct AVCodecParameters {
 可用`avcodec_parameters_to_context`将解封装的视频编码参数，传递给解码对象。
 >`avcodec_parameters_to_context` 函数用于将 `AVCodecParameters` 中的编码参数cp到 `AVCodecContext` 中。这通常在打开解码器或编码器之前使用，以确保 `AVCodecContext` 包含了流的编码参数。
 
+# 封装视频
+****
+- 创建上下文
+- 打开输出IO
+- 写入文件头
+- 写入帧数据（需要考虑写入次序）
+- 写入尾部数据（pts索引）
+
+
+
+
+
+
+**PTS计算**
+****
+
+
+**av_wite_frame 写入帧**
+****
+- `int av_write_frame(AVFormatContext* s,AVPacket* pkt)`
+	-  直接写入
+	-  pkt
+		-  不改变pkt引用计数 NULL刷新缓冲
+		-  pts使用s->streams中的time_base
+		-  stream_index 要对应s->streams
+	
+- `int av_interleaved_write_frame(AVFormatContext* s,AVPacket* pkt)`
+	- 需要在内部缓冲数据包，以确保输出文件中的数据包按照dts增加的顺序
+	-  pkt:
+		- 获取数据引用,**使用完引用计数减一，调用此函数后不可再访问pkt**
+		- **非引用计数则复制 传递NULL写入interleaving queues缓冲**
+	-  AVFormatContext.max_interleave_delta
+
+##
