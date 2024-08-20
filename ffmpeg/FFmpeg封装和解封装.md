@@ -139,12 +139,12 @@ typedef struct AVCodecParameters {
 - 写入尾部数据（pts索引）
 
 
-
-
-
-
 **PTS计算**
 ****
+概念：
+- **PTS**：Presentation Time Stamp。PTS主要用于度量解码后的视频帧什么时候被显示出来。
+- **DTS**：Decode Time Stamp。DTS主要是标识读入内存中的ｂｉｔ流在什么时候开始送入解码器中进行解码。
+也就是pts反映帧什么时候开始显示，dts反映数据流什么时候开始解码。
 
 
 **av_wite_frame 写入帧**
@@ -163,4 +163,6 @@ typedef struct AVCodecParameters {
 		- **非引用计数则复制 传递NULL写入interleaving queues缓冲**
 	-  AVFormatContext.max_interleave_delta
 
-##
+**控制播放进度 av_seek_frame**
+****
+- `int av_seek_frame(AVFormatContext* s,int sream_index,int64_t timestamp,int flags);`
