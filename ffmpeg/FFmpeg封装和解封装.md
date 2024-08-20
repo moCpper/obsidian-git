@@ -166,3 +166,14 @@ typedef struct AVCodecParameters {
 **控制播放进度 av_seek_frame**
 ****
 - `int av_seek_frame(AVFormatContext* s,int sream_index,int64_t timestamp,int flags);`
+	- `s: AVFormatContext类型的多媒体文件句柄`
+	- `stream_index : int类型表示要进行操作的流索引`
+	- `timestamp: int64_t类型的时间戳，表示要跳转到的时间位置`
+	- `flags : 跳转方法，主要有一下几种`
+```
+#define AVSEEK_FLAG_BACKWARD 1 ///< seek backward seek到timestamp之前的最近关键帧
+#define AVSEEK_FLAG_BYTE 2 ///< seeking based on position in bytes 基于字节位置的跳转
+#define AVSEEK_FLAG_ANY 4 ///< seek to any frame, even non-keyframes 跳转到任意帧，不一定是关键帧
+#define AVSEEK_FLAG_FRAME 8 ///< seeking based on frame number 基于帧数量的跳转
+```
+
