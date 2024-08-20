@@ -177,3 +177,24 @@ typedef struct AVCodecParameters {
 #define AVSEEK_FLAG_FRAME 8 ///< seeking based on frame number 基于帧数量的跳转
 ```
 
+**avformat_alloc_output_context2**
+`函数原型：int avformat_alloc_output_context2(AVFormatContext **ctx, AVOutputFormat *oformat, const char *format_name, const char *filename);`
+示例：采用**filename默认格式**创建`AVFormatContext`
+```cpp
+//编码器上下文
+const char* out_url = "test_mux.mp4";
+AVFormatContext* ec = nullptr;
+re = avformat_alloc_output_context2(&ec, NULL, NULL, 
+	out_url);									//根据文件名
+CERR(re);
+```
+
+**avformat_new_stream**
+向**AVFormatContext**中所代码的媒体文件中添加数据流
+如：
+```cpp
+//添加视频流、音频流
+auto mvs = avformat_new_stream(ec, NULL);	 //视频流
+auto mas = avformat_new_stream(ec, NULL);	 //音频流
+```
+该函数调用完成后，一个新的 **AVStream**便已经加入到输出中
