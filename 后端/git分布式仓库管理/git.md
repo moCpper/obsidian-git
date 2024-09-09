@@ -11,17 +11,20 @@
 ![[Pasted image 20240908211241.png]]
 或：
 ![[Pasted image 20240908213044.png]]
-注：**远程仓库默认名称为origin**
-## **git push origin master : master**
+注：**远程仓库默认名称为origin
+
+ **git push origin master : master**
 将本地**master**分支上的代码提交到远程**origin仓库**的**master分支**上，origin后跟本地仓库分支名。
 可缩写为：git push origin master，表示将本地maste推送到远程origin仓库.
-
+**注：在push之前最好pull一下保持当前分支与其远程分支的同步**
 # git各阶段版本回退命令
 ****
  **git add之前（工作区修改的代码）**
 工作区修改的代码不要了：
+```test
 **git checkout** -- < name >
-** 《本地仓库/分支》=》 《当前工作区（本地文件夹）修改的内容/文件》覆盖掉  **
+```
+《本地仓库/分支》=》 《当前工作区（本地文件夹）修改的内容/文件》覆盖掉  
 
 ** git add之后（处于暂存区）**
 ** git reset HEAD < name >.. ** 用以取消暂存
@@ -158,4 +161,21 @@ git checkout -b <本地分支名><远程仓库名>/<远程分支名>
 设置已经存在的本地分支追踪哪个远程分支
 ```test
 git branch -u <远程仓库名>/<远程分支名>
+```
+
+**git基本工作流**
+![[Pasted image 20240909201658.png]]
+![[Pasted image 20240909203636.png]]
+![[Pasted image 20240909203900.png]]
+
+**release阶段bug修改**
+```test
+1. git checkout -b bugfix/mybug origin/release
+2. 修改bug
+3. git add xxxx
+4. git commit -m "xxxx"
+5. git pull
+6. git push origin bugfix/mybug
+7. 代码评审工具 bugfix/mybug =》 release MR 拉人 CR merge =》 release 分支上
+8. git push origin : bigfix/mybug
 ```
